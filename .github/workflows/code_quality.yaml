@@ -1,0 +1,24 @@
+name: code_quality
+
+on:
+    push: { branches: [main] }
+    pull_request: {}
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with: { node-version: 18.16.0 }
+            - run: yarn install --frozen-lockfile
+            - run: yarn lint
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with: { node-version: 18.16.0 }
+            - run: yarn install --frozen-lockfile
+            - run: yarn compile
+            - run: yarn test
