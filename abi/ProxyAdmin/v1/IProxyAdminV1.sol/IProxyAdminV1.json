@@ -1,0 +1,559 @@
+[
+    {
+        "inputs": [],
+        "name": "Cancel_ProposalHasBeenFinalized",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "proposer",
+                "type": "address"
+            }
+        ],
+        "name": "Cancel_SenderIsNotProposer",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "currentAdmin",
+                "type": "address"
+            }
+        ],
+        "name": "ContractIsNotCurrentAdmin",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "DeveloperOnlyAllowedOperation",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "NewProposal_DescriptionIsEmpty",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "proposalID",
+                "type": "uint256"
+            }
+        ],
+        "name": "NewProposal_SenderHasActiveProposal",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "NewProposal_TargetIsEmpty",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "enum IProxyAdminV1Core.ProposalType",
+                "name": "ptype",
+                "type": "uint8"
+            }
+        ],
+        "name": "NewProposal_UnsupportedProposalType",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "vp",
+                "type": "uint256"
+            }
+        ],
+        "name": "NewProposal_VotingPowerBelowPublicProposalThreshold",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ProposalDoesNotExist",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "Vote_SenderAlreadyVoted",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "enum IProxyAdminV1Core.ProposalStatus",
+                "name": "expected",
+                "type": "uint8"
+            },
+            {
+                "internalType": "enum IProxyAdminV1Core.ProposalStatus",
+                "name": "got",
+                "type": "uint8"
+            }
+        ],
+        "name": "WrongProposalStatus",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "cancelledBy",
+                "type": "address"
+            }
+        ],
+        "name": "ProposalCancelled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "createdBy",
+                "type": "address"
+            }
+        ],
+        "name": "ProposalCreated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "executedBy",
+                "type": "address"
+            }
+        ],
+        "name": "ProposalExecuted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "proposalID",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "votedBy",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "vFor",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "vAgainst",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProposalVoteReceived",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            }
+        ],
+        "name": "cancel",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            }
+        ],
+        "name": "execute",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAcceptanceThreshold",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getDeveloperAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getExecutionPeriod",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getGovernanceTokenAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getLastProposalID",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getProposalDetails",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "createdBy",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "target",
+                        "type": "address"
+                    }
+                ],
+                "internalType": "struct IProxyAdminV1Core.ProposalDetails",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getProposalMeta",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "enum IProxyAdminV1Core.ProposalType",
+                        "name": "ptype",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint96",
+                        "name": "votingStartBlock",
+                        "type": "uint96"
+                    },
+                    {
+                        "internalType": "uint40",
+                        "name": "votesFor",
+                        "type": "uint40"
+                    },
+                    {
+                        "internalType": "uint40",
+                        "name": "votesAgainst",
+                        "type": "uint40"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "proposedByDev",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "executed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "cancelled",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct IProxyAdminV1Core.ProposalMeta",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getProposalStatus",
+        "outputs": [
+            {
+                "internalType": "enum IProxyAdminV1Core.ProposalStatus",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getProxyAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getPublicProposalThreshold",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getRejectionThreshold",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_proposer",
+                "type": "address"
+            }
+        ],
+        "name": "getUserProposals",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_voter",
+                "type": "address"
+            }
+        ],
+        "name": "getVotingDecision",
+        "outputs": [
+            {
+                "internalType": "enum IProxyAdminV1Core.VotingDecision",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getVotingPeriod",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_voter",
+                "type": "address"
+            }
+        ],
+        "name": "getVotingPower",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "enum IProxyAdminV1Core.ProposalType",
+                "name": "_ptype",
+                "type": "uint8"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "_target",
+                "type": "address"
+            }
+        ],
+        "name": "newProposal",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_proposalID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "_voteFor",
+                "type": "bool"
+            }
+        ],
+        "name": "vote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
