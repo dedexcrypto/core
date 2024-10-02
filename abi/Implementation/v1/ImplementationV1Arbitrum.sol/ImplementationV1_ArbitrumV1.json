@@ -1,0 +1,26 @@
+[
+    {
+        "inputs": [],
+        "name": "AdminOnlyAllowedOperation",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "NotImplemented",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "Initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "Terminate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

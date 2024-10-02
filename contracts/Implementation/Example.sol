@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.20;
 
-import {BaseImplementation, SharedImplementation} from './Common.sol';
+import {BaseImplementation} from './Common.sol';
 
 abstract contract ExampleStorageV1 {
     bytes32 internal constant EXAMPLE_STORAGE_V1_LOCATION =
