@@ -1,0 +1,27 @@
+[
+    {
+        "inputs": [],
+        "name": "BaseOutOfBounds",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ExponentOutOfBounds",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidExponent",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "OutOfBounds",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ProductOutOfBounds",
+        "type": "error"
+    }
+]
