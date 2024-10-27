@@ -1,10 +1,5 @@
 [
     {
-        "inputs": [],
-        "name": "AdminOnlyAllowedOperation",
-        "type": "error"
-    },
-    {
         "inputs": [
             {
                 "internalType": "int256",
@@ -19,25 +14,6 @@
         ],
         "name": "IncorrectPriceOracleRate",
         "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "NotImplemented",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "Initialize",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "Terminate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
     },
     {
         "inputs": [],
@@ -89,32 +65,6 @@
             }
         ],
         "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "v",
-                "type": "address"
-            }
-        ],
-        "name": "setParamEth2UsdDataFeedAddress",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "v",
-                "type": "address"
-            }
-        ],
-        "name": "setParamStakedEth2EthDataFeedAddress",
-        "outputs": [],
-        "stateMutability": "nonpayable",
         "type": "function"
     }
 ]
