@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {BaseImplementation} from './Common.sol';
 
@@ -25,22 +25,24 @@ abstract contract ExampleStorageV1 {
 }
 
 contract ExampleImplementationV1 is BaseImplementation, ExampleStorageV1 {
+    // solhint-disable no-empty-blocks
     function Initialize() external override(BaseImplementation) onlyAdmin {}
     function Terminate() external override(BaseImplementation) onlyAdmin {}
+    // solhint-enable no-empty-blocks
 
     function getProd() public view returns (uint256) {
         ExampleStorageV1Schema storage $1 = getExampleStorageV1();
         return $1.x * $1.y;
     }
 
-    function setX(uint256 x) public onlyAdmin {
+    function setX(uint256 _x) public onlyAdmin {
         ExampleStorageV1Schema storage $1 = getExampleStorageV1();
-        $1.x = x;
+        $1.x = _x;
     }
 
-    function setY(uint256 y) public {
+    function setY(uint256 _y) public {
         ExampleStorageV1Schema storage $1 = getExampleStorageV1();
-        $1.y = y;
+        $1.y = _y;
     }
 }
 
@@ -69,8 +71,10 @@ contract ExampleImplementationV2 is
     ExampleStorageV1,
     ExampleStorageV2
 {
+    // solhint-disable no-empty-blocks
     function Initialize() external override(BaseImplementation) onlyAdmin {}
     function Terminate() external override(BaseImplementation) onlyAdmin {}
+    // solhint-enable no-empty-blocks
 
     function getProd() public view returns (uint256) {
         ExampleStorageV1Schema storage $1 = getExampleStorageV1();
@@ -83,8 +87,8 @@ contract ExampleImplementationV2 is
         return $2.z;
     }
 
-    function setZ(uint256 z) public onlyAdmin {
+    function setZ(uint256 _z) public onlyAdmin {
         ExampleStorageV2Schema storage $2 = getExampleStorageV2();
-        $2.z = z;
+        $2.z = _z;
     }
 }

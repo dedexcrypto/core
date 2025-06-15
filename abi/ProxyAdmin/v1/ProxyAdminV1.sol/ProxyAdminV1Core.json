@@ -1,5 +1,16 @@
 [
     {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "message",
+                "type": "string"
+            }
+        ],
+        "name": "AssertionError",
+        "type": "error"
+    },
+    {
         "inputs": [],
         "name": "Cancel_ProposalHasBeenFinalized",
         "type": "error"

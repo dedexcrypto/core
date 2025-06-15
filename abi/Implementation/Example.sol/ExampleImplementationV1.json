@@ -40,7 +40,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "x",
+                "name": "_x",
                 "type": "uint256"
             }
         ],
@@ -53,7 +53,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "y",
+                "name": "_y",
                 "type": "uint256"
             }
         ],

@@ -1,7 +1,13 @@
 {
-    "extends": "solhint:default",
+    "extends": "solhint:recommended",
     "plugins": ["prettier"],
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "quotes": ["error", "single"],
+        "one-contract-per-file": "off",
+        "no-inline-assembly": "off",
+        "func-visibility": ["error", { "ignoreConstructors": true }],
+        "func-name-mixedcase": "off",
+        "var-name-mixedcase": "off"
     }
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {FullMath} from './FullMath.sol';
 import {LogExpMath} from './LogExpMath.sol';
@@ -19,77 +19,79 @@ library FixedPointNumber {
         0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 
     function wrap(
-        int256 num,
-        uint8 decimals
+        int256 _num,
+        uint8 _decimals
     ) internal pure returns (int256, bool) {
-        if (decimals > 18) {
-            if (decimals >= 95) {
+        if (_decimals > 18) {
+            if (_decimals >= 95) {
                 return (0, true);
             } else {
                 assembly ('memory-safe') {
-                    let p := exp(10, sub(decimals, 18))
-                    num := sdiv(num, p)
-                    decimals := 18
+                    let p := exp(10, sub(_decimals, 18))
+                    _num := sdiv(_num, p)
+                    _decimals := 18
                 }
             }
         }
 
-        int256 _num;
+        int256 result;
         bool ok;
 
         assembly ('memory-safe') {
-            let p := exp(10, sub(18, decimals))
-            _num := mul(num, p)
-            ok := or(eq(num, 0), eq(sdiv(_num, num), p))
+            let p := exp(10, sub(18, _decimals))
+            result := mul(_num, p)
+            ok := or(eq(_num, 0), eq(sdiv(result, _num), p))
         }
 
-        return (_num, ok);
+        return (result, ok);
     }
 
-    function int256ToUint256(int256 x) internal pure returns (uint256, bool) {
+    function int256ToUint256(
+        int256 _num
+    ) internal pure returns (uint256, bool) {
         bool isNegative; // x < 0 ? true : false
         assembly ('memory-safe') {
-            isNegative := slt(x, 0)
+            isNegative := slt(_num, 0)
         }
-        return (SignedMath.abs(x), isNegative);
+        return (SignedMath.abs(_num), isNegative);
     }
 
     function uint256ToInt256(
-        uint256 x,
-        bool isNegative
+        uint256 _num,
+        bool _isNegative
     ) internal pure returns (int256 result) {
         assembly ('memory-safe') {
             let outOfBounds := or(
-                and(iszero(isNegative), gt(x, ABS_INT256_MAX)), // Overflow
-                and(isNegative, gt(x, ABS_INT256_MIN)) // Underflow
+                and(iszero(_isNegative), gt(_num, ABS_INT256_MAX)), // Overflow
+                and(_isNegative, gt(_num, ABS_INT256_MIN)) // Underflow
             )
             if outOfBounds {
                 revert(0, 0)
             }
 
-            result := x
-            if isNegative {
+            result := _num
+            if _isNegative {
                 result := sub(0, result) // result = -result
             }
         }
     }
 
-    function ln(int256 fpn_x) internal pure returns (int256) {
-        return LogExpMath.ln(fpn_x);
+    function ln(int256 _fpn) internal pure returns (int256) {
+        return LogExpMath.ln(_fpn);
     }
 
     function mulDiv(
-        int256 fpn_x,
-        int256 fpn_y,
-        int256 fpn_d,
-        bool roundingUp
+        int256 _fpnX,
+        int256 _fpnY,
+        int256 _fpnD,
+        bool _roundingUp
     ) internal pure returns (int256) {
-        (uint256 xAbs, bool xNeg) = int256ToUint256(fpn_x);
-        (uint256 yAbs, bool yNeg) = int256ToUint256(fpn_y);
-        (uint256 dAbs, bool dNeg) = int256ToUint256(fpn_d);
+        (uint256 xAbs, bool xNeg) = int256ToUint256(_fpnX);
+        (uint256 yAbs, bool yNeg) = int256ToUint256(_fpnY);
+        (uint256 dAbs, bool dNeg) = int256ToUint256(_fpnD);
 
         uint256 resultAbs;
-        if (roundingUp) {
+        if (_roundingUp) {
             resultAbs = FullMath.mulDivRoundingUp(xAbs, yAbs, dAbs);
         } else {
             resultAbs = FullMath.mulDiv(xAbs, yAbs, dAbs);

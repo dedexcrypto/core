@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import './ProxyAdminV1.sol';
+import {ProxyAdminV1} from './ProxyAdminV1.sol';
 
 contract ProxyAdminV1Test is ProxyAdminV1 {
     constructor(
@@ -21,6 +21,6 @@ contract ProxyAdminV1Test is ProxyAdminV1 {
     {}
 
     function setDeveloper(address _developer) external {
-        developer_s = _developer;
+        developer = _developer;
     }
 }

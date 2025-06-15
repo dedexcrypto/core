@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {IProxy} from './IProxy.sol';
-import {SharedImplementation} from '../Implementation/Common.sol';
+import {SharedLogic} from '../Implementation/Common.sol';
 
 abstract contract ProxyStorage {
     bytes32 internal constant PROXY_STORAGE_LOCATION =
@@ -24,7 +24,7 @@ abstract contract ProxyStorage {
     }
 }
 
-contract Proxy is SharedImplementation, IProxy, ProxyStorage {
+contract Proxy is SharedLogic, IProxy, ProxyStorage {
     constructor() {
         _PROXY_setAdmin(msg.sender);
     }

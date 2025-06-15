@@ -6,7 +6,7 @@ import * as type from '../../var/typechain';
 
 describe('ImplementationV1', () => {
     let owner: Signer;
-    let implV1Contract: type.ImplementationV1_Test;
+    let implV1Contract: type.ImplementationV1Test;
     let eth2UsdDataFeed: type.MockV3Aggregator;
     let stakedEth2EthDataFeed: type.MockV3Aggregator;
 
@@ -14,7 +14,7 @@ describe('ImplementationV1', () => {
         [owner] = await hre.ethers.getSigners();
 
         // implV1
-        const implV1Factory = new type.ImplementationV1_Test__factory(owner);
+        const implV1Factory = new type.ImplementationV1Test__factory(owner);
         implV1Contract = await implV1Factory.deploy();
 
         // eth2UsdDataFeed

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import './Proxy.sol';
+import {Proxy} from './Proxy.sol';
 
 contract ProxyTest is Proxy {
     function getSharedStorageLocation() external pure returns (bytes32) {

@@ -2,6 +2,22 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "requestedBlockNumber",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "latestBlockNumber",
+                "type": "uint256"
+            }
+        ],
+        "name": "CheckpointFutureLookup",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "_account",
                 "type": "address"

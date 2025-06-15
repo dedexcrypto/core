@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import './ImplementationV1.sol';
+import {ImplementationV1} from './ImplementationV1.sol';
 
-contract ImplementationV1_ArbitrumV1 is ImplementationV1 {
+contract ImplementationV1ArbitrumV1 is ImplementationV1 {
     // https://data.chain.link/feeds/arbitrum/mainnet/eth-usd
     function getParamEth2UsdDataFeedAddress()
         public

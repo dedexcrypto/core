@@ -6,7 +6,7 @@
 // ==========================
 
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 /**
  * @dev Exponentiation and logarithm functions for 18 decimal fixed point numbers (both base and exponent/argument).

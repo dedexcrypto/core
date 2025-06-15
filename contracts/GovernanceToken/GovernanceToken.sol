@@ -1,19 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {IGovernanceToken} from './IGovernanceToken.sol';
 
-import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol';
+import {ERC20} from '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import {ERC20Permit} from '@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol';
 import {SafeCast} from '@openzeppelin/contracts/utils/math/SafeCast.sol';
 import {Checkpoints} from '@openzeppelin/contracts/utils/structs/Checkpoints.sol';
 
 contract GovernanceToken is IGovernanceToken, ERC20Permit {
     using Checkpoints for Checkpoints.Trace160;
-
-    error CheckpointFutureLookup(
-        uint256 requestedBlockNumber,
-        uint256 latestBlockNumber
-    );
 
     mapping(address account => Checkpoints.Trace160) private checkpoints;
 
@@ -37,7 +33,10 @@ contract GovernanceToken is IGovernanceToken, ERC20Permit {
         uint256 _blockNumber
     ) public view returns (uint256) {
         if (_blockNumber > block.number) {
-            revert CheckpointFutureLookup(_blockNumber, block.number);
+            revert IGovernanceToken.CheckpointFutureLookup(
+                _blockNumber,
+                block.number
+            );
         }
         return
             checkpoints[_account].upperLookupRecent(

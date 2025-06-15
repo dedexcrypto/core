@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import './ImplementationV1.sol';
+import {ImplementationV1} from './ImplementationV1.sol';
 
-import '@chainlink/contracts/src/v0.8/tests/MockV3Aggregator.sol';
+// solhint-disable-next-line no-unused-import
+import {MockV3Aggregator} from '@chainlink/contracts/src/v0.8/shared/mocks/MockV3Aggregator.sol';
 
 abstract contract TestStorageV1 {
     bytes32 internal constant TEST_STORAGE_V1_LOCATION =
@@ -26,15 +27,15 @@ abstract contract TestStorageV1 {
     }
 }
 
-contract ImplementationV1_Test is ImplementationV1, TestStorageV1 {
-    function setParamEth2UsdDataFeedAddress(address v) public {
+contract ImplementationV1Test is ImplementationV1, TestStorageV1 {
+    function setParamEth2UsdDataFeedAddress(address _addr) public {
         TestStorageV1Schema storage $t1 = getTestStorageV1();
-        $t1.eth2UsdDataFeedAddress = v;
+        $t1.eth2UsdDataFeedAddress = _addr;
     }
 
-    function setParamStakedEth2EthDataFeedAddress(address v) public {
+    function setParamStakedEth2EthDataFeedAddress(address _addr) public {
         TestStorageV1Schema storage $t1 = getTestStorageV1();
-        $t1.stakedEth2EthDataFeedAddress = v;
+        $t1.stakedEth2EthDataFeedAddress = _addr;
     }
 
     function getParamEth2UsdDataFeedAddress()

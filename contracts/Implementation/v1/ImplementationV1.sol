@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {IImplementationV1} from './IImplementationV1.sol';
 import {BaseImplementation} from '../Common.sol';
@@ -28,8 +28,10 @@ abstract contract ImplementationV1 is
     IImplementationV1,
     StorageV1
 {
+    // solhint-disable no-empty-blocks
     function Initialize() external override(BaseImplementation) onlyAdmin {}
     function Terminate() external override(BaseImplementation) onlyAdmin {}
+    // solhint-enable no-empty-blocks
 
     function getParamEth2UsdDataFeedAddress()
         public

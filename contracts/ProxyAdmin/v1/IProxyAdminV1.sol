@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 interface IProxyAdminV1Core {
     enum ProposalType {
@@ -110,6 +110,5 @@ interface IProxyAdminV1Core {
     function execute(uint256 _proposalID) external;
 }
 
-interface IProxyAdminV1 is IProxyAdminV1Core {
-    /*_*/
-}
+// solhint-disable-next-line no-empty-blocks
+interface IProxyAdminV1 is IProxyAdminV1Core {}

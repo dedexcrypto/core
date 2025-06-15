@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {IGovernanceToken} from '../../GovernanceToken/IGovernanceToken.sol';
 import {IProxy} from '../../Proxy/IProxy.sol';
+import {BaseImplementation} from '../../Implementation/Common.sol';
 import {IProxyAdminV1} from './IProxyAdminV1.sol';
 import {SafeCast} from '@openzeppelin/contracts/utils/math/SafeCast.sol';
 
 abstract contract ProxyAdminV1Core is IProxyAdminV1 {
+    error AssertionError(string message);
+
     // 13! * (2 / 3) + 1
     uint40 internal constant ACCEPTANCE_THRESHOLD = 4_151_347_201;
     // 13! * (1 / 3)
@@ -14,24 +17,24 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     // 13! * 0.05
     uint40 internal constant PUBLIC_PROPOSAL_THRESHOLD = 311_351_040;
 
-    address internal immutable governanceToken_i;
-    address internal immutable proxy_i;
+    address internal immutable GOVERNANCE_TOKEN;
+    address internal immutable PROXY;
 
-    uint256 internal immutable votingPeriod_i;
-    uint256 internal immutable executionPeriod_i;
+    uint256 internal immutable VOTING_PERIOD;
+    uint256 internal immutable EXECUTION_PERIOD;
 
-    address internal developer_s;
+    address internal developer;
 
-    uint256 internal lastProposalID_s;
-    mapping(address => uint256[]) internal userProposals_s;
+    uint256 internal lastProposalID;
+    mapping(address => uint256[]) internal userProposals;
 
-    mapping(uint256 => ProposalMeta) internal proposalMeta_s;
-    mapping(uint256 => string) internal proposalDetails_description_s;
-    mapping(uint256 => address) internal proposalDetails_createdBy_s;
-    mapping(uint256 => address) internal proposalDetails_target_s;
+    mapping(uint256 => ProposalMeta) internal proposalMeta;
+    mapping(uint256 => string) internal proposalDetailsDescription;
+    mapping(uint256 => address) internal proposalDetailsCreatedBy;
+    mapping(uint256 => address) internal proposalDetailsTarget;
 
     mapping(uint256 => mapping(address => VotingDecision))
-        internal votingDecision_s;
+        internal votingDecisions;
 
     constructor(
         address _governanceToken,
@@ -40,28 +43,28 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         uint256 _executionPeriod,
         address _developer
     ) {
-        require(_governanceToken != address(0x0), 'governance token is 0x0');
-        require(_proxy != address(0x0), 'proxy is 0x0');
-        require(_votingPeriod > 0, 'voting period is 0');
-        require(_executionPeriod > 0, 'voting period is 0');
-        require(_developer != address(0x0), 'developer is 0x0');
+        _assert(_governanceToken != address(0x0), 'governance token is 0x0');
+        _assert(_proxy != address(0x0), 'proxy is 0x0');
+        _assert(_votingPeriod > 0, 'voting period is 0');
+        _assert(_executionPeriod > 0, 'execution period is 0');
+        _assert(_developer != address(0x0), 'developer is 0x0');
 
-        governanceToken_i = _governanceToken;
-        proxy_i = _proxy;
-        votingPeriod_i = _votingPeriod;
-        executionPeriod_i = _executionPeriod;
-        developer_s = _developer;
+        GOVERNANCE_TOKEN = _governanceToken;
+        PROXY = _proxy;
+        VOTING_PERIOD = _votingPeriod;
+        EXECUTION_PERIOD = _executionPeriod;
+        developer = _developer;
     }
 
     modifier proposalShouldExist(uint256 _proposalID) {
-        if (_proposalID == 0 || _proposalID > lastProposalID_s) {
+        if (_proposalID == 0 || _proposalID > lastProposalID) {
             revert ProposalDoesNotExist();
         }
         _;
     }
 
     modifier contractShouldBeCurrentAdmin() {
-        address currentAdmin = IProxy(proxy_i).PROXY_getAdmin();
+        address currentAdmin = IProxy(PROXY).PROXY_getAdmin();
         if (address(this) != currentAdmin) {
             revert ContractIsNotCurrentAdmin(currentAdmin);
         }
@@ -69,23 +72,23 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     }
 
     function getGovernanceTokenAddress() external view returns (address) {
-        return governanceToken_i;
+        return GOVERNANCE_TOKEN;
     }
 
     function getProxyAddress() external view returns (address) {
-        return proxy_i;
+        return PROXY;
     }
 
     function getDeveloperAddress() external view returns (address) {
-        return developer_s;
+        return developer;
     }
 
     function getVotingPeriod() external view returns (uint256) {
-        return votingPeriod_i;
+        return VOTING_PERIOD;
     }
 
     function getExecutionPeriod() external view returns (uint256) {
-        return executionPeriod_i;
+        return EXECUTION_PERIOD;
     }
 
     function getAcceptanceThreshold() external pure returns (uint256) {
@@ -101,13 +104,13 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     }
 
     function getLastProposalID() external view returns (uint256) {
-        return lastProposalID_s;
+        return lastProposalID;
     }
 
     function getUserProposals(
         address _proposer
     ) external view returns (uint256[] memory) {
-        return userProposals_s[_proposer];
+        return userProposals[_proposer];
     }
 
     function getProposalMeta(
@@ -118,7 +121,7 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         proposalShouldExist(_proposalID)
         returns (ProposalMeta memory)
     {
-        return proposalMeta_s[_proposalID];
+        return proposalMeta[_proposalID];
     }
 
     function getProposalDetails(
@@ -131,16 +134,16 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     {
         return
             ProposalDetails({
-                description: proposalDetails_description_s[_proposalID],
-                createdBy: proposalDetails_createdBy_s[_proposalID],
-                target: proposalDetails_target_s[_proposalID]
+                description: proposalDetailsDescription[_proposalID],
+                createdBy: proposalDetailsCreatedBy[_proposalID],
+                target: proposalDetailsTarget[_proposalID]
             });
     }
 
     function getProposalStatus(
         uint256 _proposalID
     ) external view proposalShouldExist(_proposalID) returns (ProposalStatus) {
-        ProposalMeta memory pm = proposalMeta_s[_proposalID];
+        ProposalMeta memory pm = proposalMeta[_proposalID];
         return _getProposalStatus(pm);
     }
 
@@ -148,7 +151,7 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         uint256 _proposalID,
         address _voter
     ) external view proposalShouldExist(_proposalID) returns (uint256) {
-        ProposalMeta memory pm = proposalMeta_s[_proposalID];
+        ProposalMeta memory pm = proposalMeta[_proposalID];
         return _getVotingPower(_voter, pm.votingStartBlock);
     }
 
@@ -156,7 +159,7 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         uint256 _proposalID,
         address _voter
     ) external view proposalShouldExist(_proposalID) returns (VotingDecision) {
-        return votingDecision_s[_proposalID][_voter];
+        return votingDecisions[_proposalID][_voter];
     }
 
     function newProposal(
@@ -164,7 +167,7 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         string calldata _description,
         address _target
     ) external contractShouldBeCurrentAdmin returns (uint256) {
-        bool proposedByDev = msg.sender == developer_s;
+        bool proposedByDev = msg.sender == developer;
         uint96 votingStartBlock = SafeCast.toUint96(block.number - 1);
 
         if (_ptype == ProposalType.NewDeveloper) {
@@ -196,19 +199,19 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
             revert NewProposal_TargetIsEmpty();
         }
 
-        if (userProposals_s[msg.sender].length != 0) {
-            uint256 lastUserProposal = userProposals_s[msg.sender][
-                userProposals_s[msg.sender].length - 1
+        if (userProposals[msg.sender].length != 0) {
+            uint256 lastUserProposal = userProposals[msg.sender][
+                userProposals[msg.sender].length - 1
             ];
-            ProposalMeta memory pm = proposalMeta_s[lastUserProposal];
+            ProposalMeta memory pm = proposalMeta[lastUserProposal];
             ProposalStatus status = _getProposalStatus(pm);
             if (!_isFinalStatus(status)) {
                 revert NewProposal_SenderHasActiveProposal(lastUserProposal);
             }
         }
 
-        uint256 proposalID = ++lastProposalID_s;
-        proposalMeta_s[proposalID] = ProposalMeta({
+        uint256 proposalID = ++lastProposalID;
+        proposalMeta[proposalID] = ProposalMeta({
             ptype: _ptype,
             votingStartBlock: votingStartBlock,
             votesFor: 0,
@@ -217,10 +220,10 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
             executed: false,
             cancelled: false
         });
-        proposalDetails_description_s[proposalID] = _description;
-        proposalDetails_createdBy_s[proposalID] = msg.sender;
-        proposalDetails_target_s[proposalID] = _target;
-        userProposals_s[msg.sender].push(proposalID);
+        proposalDetailsDescription[proposalID] = _description;
+        proposalDetailsCreatedBy[proposalID] = msg.sender;
+        proposalDetailsTarget[proposalID] = _target;
+        userProposals[msg.sender].push(proposalID);
 
         emit ProposalCreated(proposalID, msg.sender);
 
@@ -231,14 +234,14 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         uint256 _proposalID,
         bool _voteFor
     ) external proposalShouldExist(_proposalID) {
-        ProposalMeta memory pm = proposalMeta_s[_proposalID];
+        ProposalMeta memory pm = proposalMeta[_proposalID];
 
         ProposalStatus status = _getProposalStatus(pm);
         if (status != ProposalStatus.WaitingForVotes) {
             revert WrongProposalStatus(ProposalStatus.WaitingForVotes, status);
         }
 
-        VotingDecision vd = votingDecision_s[_proposalID][msg.sender];
+        VotingDecision vd = votingDecisions[_proposalID][msg.sender];
         if (vd != VotingDecision.NotVoted) {
             revert Vote_SenderAlreadyVoted();
         }
@@ -246,12 +249,12 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         uint40 vp = _getVotingPower(msg.sender, pm.votingStartBlock);
 
         if (_voteFor) {
-            proposalMeta_s[_proposalID].votesFor = pm.votesFor + vp;
-            votingDecision_s[_proposalID][msg.sender] = VotingDecision.VotedFor;
+            proposalMeta[_proposalID].votesFor = pm.votesFor + vp;
+            votingDecisions[_proposalID][msg.sender] = VotingDecision.VotedFor;
             emit ProposalVoteReceived(_proposalID, msg.sender, vp, 0);
         } else {
-            proposalMeta_s[_proposalID].votesAgainst = pm.votesAgainst + vp;
-            votingDecision_s[_proposalID][msg.sender] = VotingDecision
+            proposalMeta[_proposalID].votesAgainst = pm.votesAgainst + vp;
+            votingDecisions[_proposalID][msg.sender] = VotingDecision
                 .VotedAgainst;
             emit ProposalVoteReceived(_proposalID, msg.sender, 0, vp);
         }
@@ -260,12 +263,12 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     function cancel(
         uint256 _proposalID
     ) external proposalShouldExist(_proposalID) {
-        ProposalMeta memory pm = proposalMeta_s[_proposalID];
-        address createdBy = proposalDetails_createdBy_s[_proposalID];
+        ProposalMeta memory pm = proposalMeta[_proposalID];
+        address createdBy = proposalDetailsCreatedBy[_proposalID];
 
         if (msg.sender != createdBy) {
             if (pm.proposedByDev) {
-                if (msg.sender != developer_s) {
+                if (msg.sender != developer) {
                     revert DeveloperOnlyAllowedOperation();
                 }
             } else {
@@ -281,17 +284,17 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
             revert Cancel_ProposalHasBeenFinalized();
         }
 
-        proposalMeta_s[_proposalID].cancelled = true;
+        proposalMeta[_proposalID].cancelled = true;
         emit ProposalCancelled(_proposalID, msg.sender);
     }
 
     function execute(
         uint256 _proposalID
     ) external contractShouldBeCurrentAdmin proposalShouldExist(_proposalID) {
-        ProposalMeta memory pm = proposalMeta_s[_proposalID];
+        ProposalMeta memory pm = proposalMeta[_proposalID];
 
         if (pm.proposedByDev) {
-            if (msg.sender != developer_s) {
+            if (msg.sender != developer) {
                 revert DeveloperOnlyAllowedOperation();
             }
         }
@@ -300,52 +303,54 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         if (status != ProposalStatus.Accepted) {
             revert WrongProposalStatus(ProposalStatus.Accepted, status);
         }
-        proposalMeta_s[_proposalID].executed = true;
+        proposalMeta[_proposalID].executed = true;
 
-        address target = proposalDetails_target_s[_proposalID];
+        address target = proposalDetailsTarget[_proposalID];
 
         if (pm.ptype == ProposalType.NewDeveloper) {
-            developer_s = target;
+            developer = target;
         } else if (pm.ptype == ProposalType.NewProxyAdmin) {
-            IProxy(proxy_i).PROXY_setAdmin(target);
-            _callInitialize(target);
+            IProxy(PROXY).PROXY_setAdmin(target);
         } else if (pm.ptype == ProposalType.NewProxyImplementation) {
-            address currentImpl = IProxy(proxy_i).PROXY_getImplementation();
+            IProxy proxy = IProxy(PROXY);
+            BaseImplementation pImpl = BaseImplementation(PROXY);
+
+            address currentImpl = proxy.PROXY_getImplementation();
             if (currentImpl != address(0x0)) {
-                _callTerminate(proxy_i);
+                pImpl.Terminate();
             }
-            IProxy(proxy_i).PROXY_setImplementation(target);
-            _callInitialize(proxy_i);
+            proxy.PROXY_setImplementation(target);
+            pImpl.Initialize();
         }
 
         emit ProposalExecuted(_proposalID, msg.sender);
     }
 
     function _getProposalStatus(
-        ProposalMeta memory pm
+        ProposalMeta memory _pm
     ) internal view returns (ProposalStatus) {
         // edge cases
-        if (pm.votingStartBlock == 0x0) {
+        if (_pm.votingStartBlock == 0x0) {
             return ProposalStatus.Invalid;
         }
-        if (pm.cancelled) {
+        if (_pm.cancelled) {
             return ProposalStatus.Cancelled;
         }
-        if (pm.executed) {
+        if (_pm.executed) {
             return ProposalStatus.Executed;
         }
-        if (block.number < pm.votingStartBlock) {
+        if (block.number < _pm.votingStartBlock) {
             return ProposalStatus.Created;
         }
 
-        uint256 votingEndBlock = pm.votingStartBlock + votingPeriod_i;
-        uint256 executionEndBlock = votingEndBlock + executionPeriod_i;
+        uint256 votingEndBlock = _pm.votingStartBlock + VOTING_PERIOD;
+        uint256 executionEndBlock = votingEndBlock + EXECUTION_PERIOD;
 
         // explicit
-        if (pm.votesAgainst >= REJECTION_THRESHOLD) {
+        if (_pm.votesAgainst >= REJECTION_THRESHOLD) {
             return ProposalStatus.Rejected;
         }
-        if (pm.votesFor >= ACCEPTANCE_THRESHOLD) {
+        if (_pm.votesFor >= ACCEPTANCE_THRESHOLD) {
             if (block.number <= executionEndBlock) {
                 return ProposalStatus.Accepted;
             } else {
@@ -355,7 +360,7 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
 
         // timeout
         if (block.number > votingEndBlock) {
-            if (pm.proposedByDev) {
+            if (_pm.proposedByDev) {
                 if (block.number <= executionEndBlock) {
                     return ProposalStatus.Accepted;
                 } else {
@@ -370,13 +375,13 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     }
 
     function _isFinalStatus(
-        ProposalStatus status
+        ProposalStatus _status
     ) internal pure returns (bool) {
         return
-            status == ProposalStatus.Cancelled ||
-            status == ProposalStatus.Rejected ||
-            status == ProposalStatus.Expired ||
-            status == ProposalStatus.Executed;
+            _status == ProposalStatus.Cancelled ||
+            _status == ProposalStatus.Rejected ||
+            _status == ProposalStatus.Expired ||
+            _status == ProposalStatus.Executed;
     }
 
     function _getVotingPower(
@@ -385,23 +390,17 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
     ) internal view returns (uint40) {
         return
             SafeCast.toUint40(
-                IGovernanceToken(governanceToken_i).balanceOfAt(
+                IGovernanceToken(GOVERNANCE_TOKEN).balanceOfAt(
                     _voter,
                     _blockNumber
                 )
             );
     }
 
-    function _callTerminate(address _target) internal {
-        (bool success, ) = _target.call(abi.encodeWithSignature('Terminate()'));
-        require(success);
-    }
-
-    function _callInitialize(address _target) internal {
-        (bool success, ) = _target.call(
-            abi.encodeWithSignature('Initialize()')
-        );
-        require(success);
+    function _assert(bool _condition, string memory _message) internal pure {
+        if (!_condition) {
+            revert AssertionError(_message);
+        }
     }
 }
 
@@ -423,7 +422,7 @@ contract ProxyAdminV1 is ProxyAdminV1Core {
     {}
 
     modifier developerOnly() {
-        if (msg.sender != developer_s) {
+        if (msg.sender != developer) {
             revert DeveloperOnlyAllowedOperation();
         }
         _;
