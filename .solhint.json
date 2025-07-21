@@ -8,6 +8,8 @@
         "no-inline-assembly": "off",
         "func-visibility": ["error", { "ignoreConstructors": true }],
         "func-name-mixedcase": "off",
-        "var-name-mixedcase": "off"
+        "var-name-mixedcase": "off",
+        "use-natspec": "off",
+        "gas-strict-inequalities": "off"
     }
 }

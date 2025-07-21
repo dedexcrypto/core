@@ -162,6 +162,7 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         return votingDecisions[_proposalID][_voter];
     }
 
+    // solhint-disable-next-line function-max-lines
     function newProposal(
         ProposalType _ptype,
         string calldata _description,

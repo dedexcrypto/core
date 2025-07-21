@@ -45,6 +45,7 @@ interface IProxyAdminV1Core {
     event ProposalCreated(uint256 indexed id, address indexed createdBy);
     event ProposalCancelled(uint256 indexed id, address indexed cancelledBy);
     event ProposalExecuted(uint256 indexed id, address indexed executedBy);
+    // solhint-disable-next-line gas-indexed-events
     event ProposalVoteReceived(
         uint256 indexed proposalID,
         address indexed votedBy,

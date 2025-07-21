@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 import {FixedPointNumber} from './FixedPointNumber.sol';
 
 contract FixedPointNumberTest {
+    // solhint-disable-next-line gas-indexed-events
     event GasTracker(uint256 usedGas);
 
     function DECIMALS() external pure returns (uint8) {
