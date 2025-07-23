@@ -55,7 +55,7 @@
     {
         "inputs": [
             {
-                "internalType": "enum IProxyAdminV1Core.ProposalType",
+                "internalType": "enum IProxyAdminV1.ProposalType",
                 "name": "ptype",
                 "type": "uint8"
             }
@@ -87,12 +87,12 @@
     {
         "inputs": [
             {
-                "internalType": "enum IProxyAdminV1Core.ProposalStatus",
+                "internalType": "enum IProxyAdminV1.ProposalStatus",
                 "name": "expected",
                 "type": "uint8"
             },
             {
-                "internalType": "enum IProxyAdminV1Core.ProposalStatus",
+                "internalType": "enum IProxyAdminV1.ProposalStatus",
                 "name": "got",
                 "type": "uint8"
             }
@@ -175,13 +175,13 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "vFor",
+                "name": "vpFor",
                 "type": "uint256"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "vAgainst",
+                "name": "vpAgainst",
                 "type": "uint256"
             }
         ],
@@ -307,7 +307,7 @@
                         "type": "address"
                     }
                 ],
-                "internalType": "struct IProxyAdminV1Core.ProposalDetails",
+                "internalType": "struct IProxyAdminV1.ProposalDetails",
                 "name": "",
                 "type": "tuple"
             }
@@ -328,7 +328,7 @@
             {
                 "components": [
                     {
-                        "internalType": "enum IProxyAdminV1Core.ProposalType",
+                        "internalType": "enum IProxyAdminV1.ProposalType",
                         "name": "ptype",
                         "type": "uint8"
                     },
@@ -363,7 +363,7 @@
                         "type": "bool"
                     }
                 ],
-                "internalType": "struct IProxyAdminV1Core.ProposalMeta",
+                "internalType": "struct IProxyAdminV1.ProposalMeta",
                 "name": "",
                 "type": "tuple"
             }
@@ -382,7 +382,7 @@
         "name": "getProposalStatus",
         "outputs": [
             {
-                "internalType": "enum IProxyAdminV1Core.ProposalStatus",
+                "internalType": "enum IProxyAdminV1.ProposalStatus",
                 "name": "",
                 "type": "uint8"
             }
@@ -464,7 +464,7 @@
         "name": "getVotingDecision",
         "outputs": [
             {
-                "internalType": "enum IProxyAdminV1Core.VotingDecision",
+                "internalType": "enum IProxyAdminV1.VotingDecision",
                 "name": "",
                 "type": "uint8"
             }
@@ -512,7 +512,7 @@
     {
         "inputs": [
             {
-                "internalType": "enum IProxyAdminV1Core.ProposalType",
+                "internalType": "enum IProxyAdminV1.ProposalType",
                 "name": "_ptype",
                 "type": "uint8"
             },

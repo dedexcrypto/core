@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.28;
 
-interface IProxyAdminV1Core {
+interface IProxyAdminV1 {
     enum ProposalType {
         Invalid,
         NewDeveloper,
@@ -49,8 +49,8 @@ interface IProxyAdminV1Core {
     event ProposalVoteReceived(
         uint256 indexed proposalID,
         address indexed votedBy,
-        uint256 vFor,
-        uint256 vAgainst
+        uint256 vpFor,
+        uint256 vpAgainst
     );
 
     error ContractIsNotCurrentAdmin(address currentAdmin);
@@ -110,6 +110,3 @@ interface IProxyAdminV1Core {
     function cancel(uint256 _proposalID) external;
     function execute(uint256 _proposalID) external;
 }
-
-// solhint-disable-next-line no-empty-blocks
-interface IProxyAdminV1 is IProxyAdminV1Core {}

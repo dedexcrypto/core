@@ -7,7 +7,7 @@ import {BaseImplementation} from '../../Implementation/Common.sol';
 import {IProxyAdminV1} from './IProxyAdminV1.sol';
 import {SafeCast} from '@openzeppelin/contracts/utils/math/SafeCast.sol';
 
-abstract contract ProxyAdminV1Core is IProxyAdminV1 {
+abstract contract ProxyAdminV1 is IProxyAdminV1 {
     error AssertionError(string message);
 
     // 13! * (2 / 3) + 1
@@ -402,30 +402,5 @@ abstract contract ProxyAdminV1Core is IProxyAdminV1 {
         if (!_condition) {
             revert AssertionError(_message);
         }
-    }
-}
-
-contract ProxyAdminV1 is ProxyAdminV1Core {
-    constructor(
-        address _governanceToken,
-        address _proxy,
-        uint256 _votingPeriod,
-        uint256 _executionPeriod,
-        address _developer
-    )
-        ProxyAdminV1Core(
-            _governanceToken,
-            _proxy,
-            _votingPeriod,
-            _executionPeriod,
-            _developer
-        )
-    {}
-
-    modifier developerOnly() {
-        if (msg.sender != developer) {
-            revert DeveloperOnlyAllowedOperation();
-        }
-        _;
     }
 }
